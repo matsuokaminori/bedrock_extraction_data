@@ -1,0 +1,33 @@
+version: '3'
+services:
+  bedrock-demo:
+    restart: always
+    build: .
+    container_name: 'bedrock-demo'
+    working_dir: '/root/src'
+    tty: true
+    volumes:
+      - ${SRC_PATH}:/root/src
+    env_file:
+        - ./.env
+    ports:
+      - 8000:8000
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: bedrock-test-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      TZ: 'Asia/Tokyo'
+    volumes:
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - mysql_data:/var/lib/mysql
+    env_file:
+        - ./.env
+    ports:
+        - "3306:3306"
+
+volumes:
+  mysql_data:
