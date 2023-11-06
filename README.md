@@ -2,6 +2,12 @@
 
 Bedrockを使ってMySQLからデータを抽出する
 
+## AWSの準備
+- Bedrockへのアクセス許と、s3へのput権限を持つユーザーorロールを作成
+  - アクセスキーとシークレットキーを.envファイルに記述
+- Bedrockのコンソール画面から「Model access」に行き、「Claude Instant」へのアクセスリクエストをする。
+- s3バケットを作成する
+
 ## build and upcontainer
 ```bash
 docker-compse up --build

@@ -6,7 +6,7 @@ from create_sql_by_llm import create_query
 from database.extraction_data import execute_query
 
 
-bucket_name = 'matsuoka-test'
+BUCKET_NAME = os.getenv("BUCKET_NAME")
 
 
 def output_csv(items):
@@ -17,7 +17,6 @@ def output_csv(items):
         writer = csv.writer(file)
         writer.writerows(items)
 
-    print(f'CSVファイル "{csv_file}" にデータを書き込みました。')
     return csv_file
 
 
@@ -29,9 +28,8 @@ def upload_to_s3(local_file_path):
     s3_file_name = f'{file_name}'
 
     # ファイルをS3にアップロード
-    s3.upload_file(local_file_path, bucket_name, s3_file_name)
+    s3.upload_file(local_file_path, BUCKET_NAME, s3_file_name)
 
-    print(f'{local_file_path} を {bucket_name}/{s3_file_name} にアップロードしました。')
     return s3_file_name
 
 
@@ -43,7 +41,7 @@ def generate_presigned_url(object_name, expiration=3600):
     try:
         presigned_url = s3.generate_presigned_url(
             'get_object',
-            Params={'Bucket': bucket_name, 'Key': object_name},
+            Params={'Bucket': BUCKET_NAME, 'Key': object_name},
             ExpiresIn=expiration
         )
     except ClientError as e:
@@ -63,4 +61,4 @@ if __name__ == "__main__":
 
     s3_file_name = upload_to_s3(local_file_path)
     presigned_url = generate_presigned_url(s3_file_name)
-    print(presigned_url)
+    print("ここからダウンロード: ", presigned_url)
